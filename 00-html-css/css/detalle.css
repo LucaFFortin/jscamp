@@ -1,0 +1,96 @@
+:root {
+    --primary: #3b4550;
+    --primary-dark: #0a3d66;
+    --primary-hover: #0d5ba8;
+    --primary-light: #0099ff;
+    --background: #101922;
+    --text-primary: #ffffff;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border: rgba(255, 255, 255, 0.1);
+    --card-bg: #1e293b;
+    --card-svg: #0099ff10;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --input-bg: #1e293b;
+    --hsla-example: hsla(210, 100%, 56%, 1);
+}
+
+main {
+    max-width: 1024px;
+    margin: 0 auto;
+}
+
+.ubication {
+    margin: 3em 0;
+
+    span {
+        color: var(--text-muted);
+    }
+
+    span.divisor {
+        margin-inline: 1em
+    }
+}
+
+article {
+    margin: 0 auto;
+    padding: 2em;
+}
+
+
+.job-title {
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+        color: var(--text-muted);
+    }
+
+    button {
+        color: var(--text-primary);
+        background-color: var(--primary-light);
+        border: none;
+        padding: 1em 2em;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: 0.3s all;
+        box-shadow: 1px 0 0 0 #0001;
+
+        &:hover,
+        &:focus {
+            background-color: var(--primary-hover);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    
+    }
+
+}
+
+.job-description {
+    h2 {
+        margin-block: 0.5em;
+    }
+    
+    section > p,
+    section > ul > li {
+        color: var(--text-secondary);
+    }
+    
+    ul {
+        list-style: none;
+    }
+    
+    li {
+        display: flex;
+        gap: 0.5em;
+        margin-bottom: 0.8em;
+    }
+}
