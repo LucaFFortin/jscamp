@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - DevJobs</title>
+  <link rel="stylesheet" href="../css/login.css">
+  <link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect" />
+  <link as="style"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900"
+    onload="this.rel='stylesheet'" rel="stylesheet" />
+
+</head>
+
+<body>
+  <header>
+    <a href="../index.html">
+      <h1>DevJobs</h1>
+    </a>
+
+    <nav>
+      <a href="../index.html">Inicio</a>
+      <a href="./busqueda.html">Empleos</a>
+      <a href="#">Empresas</a>
+      <a href="#">Salarios</a>
+    </nav>
+
+    <div>
+      <a href="#">Publicar un empleo</a>
+      <a href="./login.html">Iniciar sesión</a>
+    </div>
+  </header>
+
+  <main>
+    <article class="login-container">
+      <section class="welcome">
+        <h2>Bienvenido nuevamente</h2>
+        <p>Inicia sesión para encontrar tu proxima oportunidad</p>
+      </section>
+      <section class="form-container">
+        <form action="#" method="POST">
+          <label class="user-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-mail">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+              <path d="M3 7l9 6l9 -6" />
+            </svg>
+            <input type="text" placeholder="Email">
+          </label>
+          <label class="user-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-lock">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z" />
+              <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+              <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+            </svg>
+            <input type="password" placeholder="Password">
+          </label>
+          <div>
+            <label>
+              <input type="checkbox">
+              Recordarme
+            </label>
+  
+            <a href="#">Olvide mi contraseña</a>
+          </div>
+
+          <button type="submit">Iniciar sesión</button>
+          <section class="signup">
+            <p>¿No tienes una cuenta?</p>
+            <div>
+              <button>Registrarte como usuario</button>
+              <button>Registrarte como empresa</button>
+            </div>
+          </section>
+        </form>
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    <small>&copy; 2025 DevJobs. Todos los derechos reservados.</small>
+    <div>
+      <a>Contacto</a>
+      <a>Soporte</a>
+      <a>Términos</a>
+    </div>
+  </footer>
+
+</body>
+
+</html>
