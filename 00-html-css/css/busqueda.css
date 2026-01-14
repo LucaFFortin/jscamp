@@ -94,6 +94,7 @@ body > header {
 main {
     max-width: 1024px;
     margin: 0 auto;
+    padding-inline: 2em;
 }
 
 
@@ -203,7 +204,17 @@ section article {
         background-color: var(--primary-light);
         color: var(--text-primary);
         font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.3s;
+        font-size: medium;
 
+        &:hover {
+            background-color: var(--primary-hover);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
     }
 
     &:first-of-type {
@@ -257,6 +268,16 @@ nav a.active-page {
     background-color: var(--primary-light);
 }
 
+.is-hidden {
+    display: none;
+}
+
+button.is-applied {
+    background-color: rgba(36, 224, 36, 0.74);
+    pointer-events: none;
+    font-size: small;
+    padding-block: 0.8rem;
+}
 
 
 /* Footer */
