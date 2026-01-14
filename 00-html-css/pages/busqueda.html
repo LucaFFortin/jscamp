@@ -15,6 +15,7 @@
 
     <script type="module" src="../scripts/filters.js"></script>
     <script type="module" src="../scripts/apply.js"></script>
+    <script type="module" src="../scripts/fetch-jobs.js"></script>
 </head>
 
 <body>
@@ -67,15 +68,14 @@
             <option value="cdmx">Ciudad de México</option>
             <option value="guadalajara">Guadalajara</option>
             <option value="barcelona">Barcelona</option>
-            <option value="remote">Remoto</option>
+            <option value="madrid">Madrid</option>
+            <option value="monterrey">Monterrey</option>
+            <option value="lima">Lima</option>
+            <option value="santiago">Santiago de Chile</option>
+            <option value="bsas">Buenos Aires</option>
+            <option value="bogota">Bogotá</option>
+            <option value="remoto">Remoto</option>
           </select>
-
-          <!-- <select name="contract" id="contract-filter">
-            <option value="">Tipo de contrato</option>
-            <option value="remote">Remoto</option>
-            <option value="hibrid">Hibrido</option>
-            <option value="presential">Presencial</option>
-          </select> -->
 
           <select name="experience" id="experience-filter">
             <option value="">Nivel de experiencia</option>
@@ -90,7 +90,10 @@
     <section class="job-listings">
       <h2>Resultados de busqueda</h2>
 
-      <article class="job-listing-card" data-location="remote" data-technology="javascript,react,node.js"
+      <div class="job-listings-container">
+
+      </div>
+      <!-- <article class="job-listing-card" data-location="remote" data-technology="javascript,react,node.js"
       data-experience="junior">
         <div>
           <h3>Ingeniero de software</h3>
@@ -139,7 +142,7 @@
         <div>
           <button>Aplicar</button>
         </div>
-      </article>
+      </article> -->
 
       <nav>
         <a href="#">

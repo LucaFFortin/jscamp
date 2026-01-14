@@ -228,10 +228,10 @@ section article {
     }
 }
 
-section article:first-child {
+/* section article:first-child {
     border-radius: 200px;
 
-}
+} */
 
 section:last-of-type nav {
     display: flex;

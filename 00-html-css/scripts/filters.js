@@ -3,8 +3,7 @@ const filtersContainer = document.querySelector("#filters")
 let filters = {
     "location": "",
     "technology": "",
-    "experience": "",
-    "contract": ""
+    "experience": ""
 }
 
 filtersContainer.addEventListener("change", e => {
@@ -19,7 +18,6 @@ filtersContainer.addEventListener("change", e => {
 
     console.log(id, id === "technology-filter" )
     if (id === "technology-filter") filters["technology"] = modalidad
-    // if (id === "contract-filter") filters["contract"] = modalidad
     if (id === "experience-filter") filters["experience"] = modalidad
     if (id === "location-filter") filters["location"] = modalidad
 
@@ -33,7 +31,6 @@ function setFilters () {
 
     jobs.forEach(job => {
         let technologies = job.getAttribute("data-technology").split(",")
-        // let contract = job.getAttribute("data-contract")
         let experience = job.getAttribute("data-experience")
         let location = job.getAttribute("data-location")
 
