@@ -8,8 +8,6 @@ formulario.addEventListener("input", e => {
     if (e.target.nodeName !== "INPUT") return
 
     filterValue = e.target.value.toLowerCase()
-    console.log(e.target.value);
-    console.log(filters);
     const jobs = document.querySelectorAll(".job-listing-card")
 
     jobs.forEach(job => {
@@ -35,9 +33,6 @@ formulario.addEventListener("input", e => {
             && (filters["location"] === location || filters["location"] === "")))
 
         job.classList.toggle("is-hidden", !isShown)
-        hasTechnology = false
-        if (!title.includes(e.target.value)) return
-        // console.log(contractor)
     })
 })
 

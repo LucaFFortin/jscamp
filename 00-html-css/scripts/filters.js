@@ -27,8 +27,6 @@ filtersContainer.addEventListener("change", e => {
 
 function setFilters () {
     let jobs = document.querySelectorAll(".job-listing-card")
-    let isShown = false
-    let hasTechnology = false
 
     jobs.forEach(job => {
         // form logic
@@ -39,6 +37,7 @@ function setFilters () {
         let experience = job.getAttribute("data-experience")
         let location = job.getAttribute("data-location")
 
+        let hasTechnology = false
         technologies.forEach(tech => {
             if (tech === filters["technology"] || filters["technology"] === "") hasTechnology = true
         })
@@ -49,9 +48,8 @@ function setFilters () {
             ) || (filterValue === "" && (hasTechnology 
             && (filters["experience"] === experience || filters["experience"] === "")
             && (filters["location"] === location || filters["location"] === "")))
-        job.classList.toggle("is-hidden", !isShown)
+        
+            job.classList.toggle("is-hidden", !isShown)
 
-        isShown = false
-        hasTechnology = false
     })
 }
