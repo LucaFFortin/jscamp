@@ -1,7 +1,8 @@
 const filtersContainer = document.querySelector("#filters")
+import { filterValue } from "./form.js"
 
 // estado de filtros
-let filters = {
+export let filters = {
     "location": "",
     "technology": "",
     "experience": ""
@@ -30,6 +31,10 @@ function setFilters () {
     let hasTechnology = false
 
     jobs.forEach(job => {
+        // form logic
+        let title = job.querySelector("h3").innerText.toLowerCase()
+        let contractor = job.querySelector("h4").innerText.toLowerCase().replace(/ \|.*/g, "")
+
         let technologies = job.getAttribute("data-technology").split(",")
         let experience = job.getAttribute("data-experience")
         let location = job.getAttribute("data-location")
@@ -38,11 +43,12 @@ function setFilters () {
             if (tech === filters["technology"] || filters["technology"] === "") hasTechnology = true
         })
 
-        if (hasTechnology 
+        let isShown = (title.startsWith(filterValue) || contractor.startsWith(filterValue)) && (hasTechnology 
             && (filters["experience"] === experience || filters["experience"] === "")
             && (filters["location"] === location || filters["location"] === "")
-            ) isShown = true
-
+            ) || (filterValue === "" && (hasTechnology 
+            && (filters["experience"] === experience || filters["experience"] === "")
+            && (filters["location"] === location || filters["location"] === "")))
         job.classList.toggle("is-hidden", !isShown)
 
         isShown = false

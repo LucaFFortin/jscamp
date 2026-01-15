@@ -22,6 +22,10 @@
     --hsla-example: hsla(210, 100%, 56%, 1);
 }
 
+html {
+    scrollbar-gutter: stable;
+}
+
 body{
     background-color: var(--background);
     color: var(--text-primary);
