@@ -12,10 +12,7 @@
   <link as="style"
     href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700;900"
     onload="this.rel='stylesheet'" rel="stylesheet" />
-
-    <script type="module" src="../scripts/filters.js"></script>
-    <script type="module" src="../scripts/apply.js"></script>
-    <script type="module" src="../scripts/fetch-jobs.js"></script>
+  <script type="module" src="../scripts/main.js"></script>
 </head>
 
 <body>
@@ -32,6 +29,7 @@
     <div>
       <a href="#">Publicar un empleo</a>
       <a href="./login.html">Iniciar sesion</a>
+        <devjobs-avatar></devjobs-avatar>
     </div>
 
   </header>
@@ -80,7 +78,7 @@
           <select name="experience" id="experience-filter">
             <option value="">Nivel de experiencia</option>
             <option value="junior">Junior</option>
-            <option value="semisenior">SemiSenior</option>
+            <option value="mid-level">SemiSenior</option>
             <option value="senior">Senior</option>
           </select>
         </fieldset>
@@ -90,59 +88,7 @@
     <section class="job-listings">
       <h2>Resultados de busqueda</h2>
 
-      <div class="job-listings-container">
-
-      </div>
-      <!-- <article class="job-listing-card" data-location="remote" data-technology="javascript,react,node.js"
-      data-experience="junior">
-        <div>
-          <h3>Ingeniero de software</h3>
-          <h4>Tech Solutions Inc. | Remoto</h4>
-          <p> Buscamos un ingeniero de software con experiencia en desarrollo web y conocimientos en JavaScript, React y
-            Node.js. El candidato ideal debe ser capaz de trabajar en equipo y tener buenas habilidades de comunicación.
-          </p>
-        </div>
-        <div>
-          <button>Aplicar</button>
-        </div>
-      </article>
-
-      <article class="job-listing-card" data-location="cdmx" data-technology="python,r,sql" data-experience="junior">
-        <div>
-          <h3>Analista de datos</h3>
-          <h4>Data Driven Co. | Cuidad de México</h4>
-          <p> Estamos buscando un analista de datos con experiencia en el manejo de grandes conjuntos de datos y
-            herramientas de visualización. Se requiere conocimiento en SQL, Python y R.</p>
-        </div>
-        <div>
-          <button>Aplicar</button>
-        </div>
-      </article>
-
-      <article class="job-listing-card" data-location="guadalajara" data-technology="swift,kotlin" data-experience="semisenior">
-        <div>
-          <h3>Desarrollador de Aplicaciones Móviles</h3>
-          <h4>Movile Apps Ltd. | Guadalajara</h4>
-          <p> Buscamos un desarrollador de aplicaciones móviles con experiencia en iOS y/o Android. El candidato debe
-            tener conocimientos en Swift, Kotlin y el desarrollo de interfaces de usuario.</p>
-        </div>
-        <div>
-          <button>Aplicar</button>
-        </div>
-      </article>
-
-      <article class="job-listing-card" data-location="remote" data-technology="aws,azure,gcp" data-experience="senior">
-        <div>
-          <h3>Ingeniero de DevOps</h3>
-          <h4>Cloud Services SA. | Remoto</h4>
-          <p> Estamos buscando un ingeniero de DevOps con experiencia en la gestión de infraestructuras en la nube,
-            automatización de procesos y herramientas de integración continua. Se requiere conocimiento en AWS, Azure o
-            GCP.</p>
-        </div>
-        <div>
-          <button>Aplicar</button>
-        </div>
-      </article> -->
+      <div class="job-listings-container"></div>
 
       <nav>
         <a href="#">

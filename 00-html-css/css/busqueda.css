@@ -68,6 +68,7 @@ body > header {
     > div {
         display: flex;
         margin: auto 0;
+        align-items: center;
     
         > a {
             background-color: #FF00FF;
@@ -78,10 +79,10 @@ body > header {
 
             &:first-child {
                 background-color: var(--primary-dark);
-                color: var(--primary-hover);
+                color: var(--primary-light);
             }
 
-            &:last-child {
+            &:nth-child(2) {
                 background-color: var(--primary);
             }
         }
