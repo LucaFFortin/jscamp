@@ -1,5 +1,6 @@
 const filtersContainer = document.querySelector("#filters")
 
+// estado de filtros
 let filters = {
     "location": "",
     "technology": "",
@@ -7,7 +8,7 @@ let filters = {
 }
 
 filtersContainer.addEventListener("change", e => {
-    console.log(e.target.id, e.target.value)
+    if (e.target.nodeName !== "SELECT") return
 
     let id = e.target?.id
     let modalidad = e.target?.value
@@ -16,7 +17,6 @@ filtersContainer.addEventListener("change", e => {
         return
     }
 
-    console.log(id, id === "technology-filter" )
     if (id === "technology-filter") filters["technology"] = modalidad
     if (id === "experience-filter") filters["experience"] = modalidad
     if (id === "location-filter") filters["location"] = modalidad
@@ -36,14 +36,14 @@ function setFilters () {
 
         technologies.forEach(tech => {
             if (tech === filters["technology"] || filters["technology"] === "") hasTechnology = true
-            
         })
+
         if (hasTechnology 
             && (filters["experience"] === experience || filters["experience"] === "")
             && (filters["location"] === location || filters["location"] === "")
             ) isShown = true
 
-        job.classList.toggle("is-hidden", isShown === false)
+        job.classList.toggle("is-hidden", !isShown)
 
         isShown = false
         hasTechnology = false
