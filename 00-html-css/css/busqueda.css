@@ -24,6 +24,7 @@
 
 html {
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
 }
 
 body{
@@ -259,18 +260,15 @@ section:last-of-type nav {
         cursor: pointer;
 
 
-        &.is-active {
+        &.active-page {
             background-color: var(--primary-light);
         }
 
         svg {
             color: var(--text-primary);
+            pointer-events: none;
         }
     }
-}
-
-nav a.active-page {
-    background-color: var(--primary-light);
 }
 
 .is-hidden {
