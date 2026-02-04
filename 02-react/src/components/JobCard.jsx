@@ -1,28 +1,28 @@
 import { useState } from "react"
 
-export function JobCard({ job }) {
-  const [isApplied, setIsApplied] = useState(false)
+export const JobCard = ({ job }) => {
 
-  const handleApplyClick = () => {
-    setIsApplied(true)
-  }
+    const [isApplied, setIsApplied] = useState(false)
 
-  const buttonClasses = isApplied ? 'button-apply-job is-applied' : 'button-apply-job'
-  const buttonText = isApplied ? 'Aplicado' : 'Aplicar'
+    const handleClick = () => {
+        if (isApplied) return
 
-  return (
-    <article 
-      className="job-listing-card"
-      data-modalidad={job.data.modalidad}
-      data-nivel={job.data.nivel}
-      data-technology={job.data.technology}
-    >
-      <div>
-        <h3>{job.titulo}</h3>
-        <small>{job.empresa} | {job.ubicacion}</small>
-        <p>{job.descripcion}</p>
-      </div>
-      <button className={buttonClasses} onClick={handleApplyClick}>{buttonText}</button>
-    </article>
-  )
+        setIsApplied(true)
+    }
+
+    const { data, descripcion, empresa, id, titulo, ubicacion } = job
+    const { modalidad, nivel, technologies } = data
+
+    return (
+        <article className='job-listing-card' data-modalidad={modalidad} data-nivel={nivel} data-technologies={technologies?.join(", ")}>
+            <div>
+                <h3>{titulo}</h3>
+                <h4>{empresa} | {ubicacion}</h4>
+                <p>{descripcion}</p>
+            </div>
+            <div>
+                <button onClick={handleClick} className={isApplied ? "is-applied" : ""} disabled={isApplied} >{isApplied ? "Aplicado" : "Aplicar" }</button>
+            </div>
+        </article>
+    )
 }

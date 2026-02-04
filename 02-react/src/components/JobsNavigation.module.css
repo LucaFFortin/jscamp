@@ -1,0 +1,48 @@
+:root {
+    --background: #101922;
+    --text-primary: #ffffff;
+    --primary-light: #0099ff;
+    --text-muted: #94a3b8;
+    --primary-dark: #0a3d66;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 3rem;
+
+    a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        text-align: center;
+        border-radius: 5px;
+        border: none;
+        background-color: var(--background);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: 0.4s background-color;
+
+        svg {
+            color: var(--text-primary);
+            pointer-events: none;
+        }
+
+        &:hover {
+            background-color: var(--text-muted);
+        }
+    }
+}
+
+
+a.isActive {
+    background-color: var(--primary-light);
+
+    &:hover {
+        background-color: var(--primary-dark);
+    }
+}
