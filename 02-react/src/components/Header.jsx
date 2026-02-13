@@ -1,17 +1,19 @@
+import { Link } from "./Link";
+
 export function Header() {
     return (
         <header className="body-header">
-            <a href="/">
+            <Link href="/" className={"hero"}>
                 <h1>DevJobs</h1>
-            </a>
+            </Link>
 
             <nav>
-                <a href="/search">Buscar</a>
+                <Link href="/search">Buscar</Link>
             </nav>
 
             <div>
-                <a href="#">Publicar un empleo</a>
-                <a href="/login">Iniciar sesion</a>
+                <Link href="#">Publicar un empleo</Link>
+                <Link href="/login">Iniciar sesion</Link>
             </div>
 
         </header>

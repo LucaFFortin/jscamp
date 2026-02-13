@@ -1,8 +1,26 @@
 import { InfoArticle } from "../components/InfoArticle"
 import { BriefCaseSVG, PeopleSVG, BuildingSVG } from "../assets/SVGs"
 import "./home.css"
+import { useRouter } from "../hooks/useRouter"
 
 export function HomePage() {
+  const { navigateTo } = useRouter()
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+
+    let formData = new FormData(event.currentTarget)
+
+    let query = encodeURIComponent(formData.get("query"))
+    
+    const href = query !== "" 
+      ? `/search?query=${query}`
+      : "/search"
+
+
+    navigateTo(href)
+  }
+
   return (
     <main className="homepage-main">
       <section className="background-image">
@@ -12,7 +30,7 @@ export function HomePage() {
 
         <p>Unete a la comunidad mas grande de programadores y encuentra tu proxima oportunidad.</p>
 
-        <form role="search">
+        <form role="search" onSubmit={(e) => handleSubmit(e)}>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"
             className="icon icon-tabler icons-tabler-outline icon-tabler-search">
@@ -21,7 +39,7 @@ export function HomePage() {
             <path d="M21 21l-6 -6" />
           </svg>
 
-          <input type="text" required placeholder="Buscar empleos por titulo, habilidad o empresa" />
+          <input type="text" placeholder="Buscar empleos por titulo, habilidad o empresa" name="query" />
 
           <button type="submit">Buscar</button>
         </form>

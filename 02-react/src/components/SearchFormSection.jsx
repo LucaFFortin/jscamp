@@ -1,15 +1,11 @@
 import { useId } from "react"
 
-export function SearchFormSection({ onSearch, onTextFilter }) {
-  const idQuery = useId()
-  const idTechnology = useId()
-  const idLocation = useId()
-  const idExperience = useId()
+const useSearchForm = ({ idQuery, idTechnology, idLocation, idExperience, onSearch }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    let formData = new FormData(e.currentTarget) 
+    let formData = new FormData(e.currentTarget)
 
     let filters = {
       query: formData.get(idQuery),
@@ -17,28 +13,21 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
       location: formData.get(idLocation),
       experience: formData.get(idExperience),
     }
-    
+
     onSearch(filters)
   }
 
-  // const handleTextChange = (e) => {
-  //   let text = e.target.value
+  return {
+    handleSubmit
+  }
+}
 
-  //   onTextFilter(text)
-  // }
-
-  // const handleFilterChange = event => {
-  //   let target = event.target
-    
-  //   let newFilters = {
-  //     query: target.id === idQuery ? target.value : filters.query,
-  //     technologies: target.id === idTechnology ? target.value : filters.technologies,
-  //     location: target.id === idLocation ? target.value : filters.location,
-  //     experience: target.id === idExperience ? target.value : filters.experience,
-  //   }
-    
-  //   onSearch(newFilters)
-  // }
+export function SearchFormSection({ onSearch }) {
+  const idQuery = useId()
+  const idTechnology = useId()
+  const idLocation = useId()
+  const idExperience = useId()
+  const { handleSubmit } = useSearchForm({idQuery, idTechnology, idLocation, idExperience, onSearch})
 
   return (
     <section className="form-section">
@@ -56,12 +45,11 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
             <path d="M21 21l-6 -6" />
           </svg>
 
-          <input 
-            type="text"  
-            placeholder="Buscar trabajos, empresas o habilidades" 
-            name={idQuery} 
+          <input
+            type="text"
+            placeholder="Buscar trabajos, empresas o habilidades"
+            name={idQuery}
             id={idQuery}
-            // onChange={handleFilterChange}
           />
 
         </fieldset>

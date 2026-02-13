@@ -29,11 +29,11 @@ body{
 }
 
 a {
-    text-decoration: none; /* poner none*/ 
-    color: #ffffff;
+    text-decoration: none;
 }
 
 h1 {
+    color: #ffffff;
     font-size: 1.5rem;
 }
 
