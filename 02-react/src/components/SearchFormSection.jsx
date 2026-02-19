@@ -1,28 +1,43 @@
-import { useId } from "react"
+import { useId, useRef } from "react"
 
 const useSearchForm = ({ idQuery, idTechnology, idLocation, idExperience, onSearch }) => {
-
+  const timeoutID = useRef(null)
   const handleSubmit = (e) => {
     e.preventDefault()
 
     let formData = new FormData(e.currentTarget)
-
+    
     let filters = {
       query: formData.get(idQuery),
       technologies: formData.get(idTechnology),
       location: formData.get(idLocation),
       experience: formData.get(idExperience),
     }
+    
+    // aplicamos debounce si la entrada de datos proviene del input para evitar multiples llamadas
+    if (e.target.name === idQuery) {
 
-    onSearch(filters)
+      // Debounce: tecnica para retrasar las llamadas a una funcion
+      // si existe el timer, lo eliminamos y creamos uno nuevo
+      if (timeoutID.current) clearTimeout(timeoutID.current)
+
+      // solo si pasa el tiempo sin crear un nuevo timer se ejecuta
+      timeoutID.current = setTimeout(() => {
+        onSearch(filters)
+      }, 500)
+      console.log(e.target.name, idQuery,e.target.name === idQuery )
+    } else {
+      onSearch(filters)
+    }
   }
+
 
   return {
     handleSubmit
   }
 }
 
-export function SearchFormSection({ onSearch }) {
+export function SearchFormSection({ onSearch, onClearFilters, hasActiveFilters }) {
   const idQuery = useId()
   const idTechnology = useId()
   const idLocation = useId()
@@ -81,7 +96,10 @@ export function SearchFormSection({ onSearch }) {
             <option value="mid-level">SemiSenior</option>
             <option value="senior">Senior</option>
           </select>
+
+          {hasActiveFilters && <button onClick={onClearFilters} type="reset">Limpiar Filtros</button>}
         </fieldset>
+
       </form>
     </section>
   )
