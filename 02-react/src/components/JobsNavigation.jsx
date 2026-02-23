@@ -35,9 +35,17 @@ export const JobsNavigation = ({ currentPage = 1, totalPages = 10, onPageChange 
         }
     }
 
+    const buildLinkURL = (page) => {
+        const url = new URL(window.location)
+        url.searchParams.set('page', String(page))
+        url.search = url.searchParams.toString()
+
+        return `${url.pathname}?${url.searchParams.toString()}`
+    }
+
     return (
         <nav className={styles.pagination} >
-            <a className="prev-page" onClick={handlePrevPage} style={isFirstPageStyles}>
+            <a className="prev-page" onClick={handlePrevPage} style={isFirstPageStyles} href={buildLinkURL(currentPage - 1)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                     className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-left">
@@ -48,11 +56,11 @@ export const JobsNavigation = ({ currentPage = 1, totalPages = 10, onPageChange 
 
             {
                 pages.map(page => (
-                    <a key={page} className={currentPage === page ? styles.isActive : ""} onClick={event => handlePageChange(event, page)}>{page}</a>
+                    <a href={buildLinkURL(page)} key={page} className={currentPage === page ? styles.isActive : ""} onClick={event => handlePageChange(event, page)}>{page}</a>
                 ))
             }
 
-            <a className="next-page" onClick={handleNextPage} style={isLastPageStyles}>
+            <a className="next-page" onClick={handleNextPage} style={isLastPageStyles} href={buildLinkURL(currentPage + 1)}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                     className="icon icon-tabler icons-tabler-outline icon-tabler-chevron-right">

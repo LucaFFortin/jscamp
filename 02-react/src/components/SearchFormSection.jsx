@@ -25,7 +25,6 @@ const useSearchForm = ({ idQuery, idTechnology, idLocation, idExperience, onSear
       timeoutID.current = setTimeout(() => {
         onSearch(filters)
       }, 500)
-      console.log(e.target.name, idQuery,e.target.name === idQuery )
     } else {
       onSearch(filters)
     }
@@ -37,7 +36,7 @@ const useSearchForm = ({ idQuery, idTechnology, idLocation, idExperience, onSear
   }
 }
 
-export function SearchFormSection({ onSearch, onClearFilters, hasActiveFilters }) {
+export function SearchFormSection({ onSearch, onClearFilters, hasActiveFilters, initialFilters }) {
   const idQuery = useId()
   const idTechnology = useId()
   const idLocation = useId()
@@ -65,6 +64,7 @@ export function SearchFormSection({ onSearch, onClearFilters, hasActiveFilters }
             placeholder="Buscar trabajos, empresas o habilidades"
             name={idQuery}
             id={idQuery}
+            defaultValue={initialFilters.query}
           />
 
         </fieldset>
