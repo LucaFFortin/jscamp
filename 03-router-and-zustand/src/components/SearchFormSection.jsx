@@ -1,136 +1,137 @@
-import { useId, useState, useRef } from "react"
+import { useId, useRef } from "react"
 
-const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter }) => {
-  const timeoutId = useRef(null)
-  const [searchText, setSearchText] = useState("")
+const useSearchForm = ({ idQuery, idTechnology, idLocation, idExperience, onSearch }) => {
+  const timeoutID = useRef(null)
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    
-    const formData = new FormData(event.currentTarget)
-    
-    if (event.target.name === idText) {
-      return // ya lo manejamos en onChange
-    }
+  const handleChange = (e) => {
+    let { name, value } = e.target
+    if (name === idQuery) name = "query"
+    if (name === idTechnology) name = "technologies"
+    if (name === idLocation) name = "location"
+    if (name === idExperience) name = "experience"
+    onSearch(prevData => ({
+      ...prevData,
+      [name]: value
+    }))
+  }
 
-    const filters = {
-      technology: formData.get(idTechnology),
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    let formData = new FormData(e.currentTarget)
+
+    let filters = {
+      query: formData.get(idQuery),
+      technologies: formData.get(idTechnology),
       location: formData.get(idLocation),
-      experienceLevel: formData.get(idExperienceLevel)
+      experience: formData.get(idExperience),
     }
 
-    onSearch(filters)
-  }
+    // aplicamos debounce si la entrada de datos proviene del input para evitar multiples llamadas
+    if (e.target.name === idQuery) {
 
-  const handleTextChange = (event) => {
-    const text = event.target.value
-    setSearchText(text) // actualizamos el input inmediatamente
+      // Debounce: tecnica para retrasar las llamadas a una funcion
+      // si existe el timer, lo eliminamos y creamos uno nuevo
+      if (timeoutID.current) clearTimeout(timeoutID.current)
 
-    // Debounce: Cancelar el timeout anterior
-    if (timeoutId.current) {
-      clearTimeout(timeoutId.current)
+      // solo si pasa el tiempo sin crear un nuevo timer se ejecuta
+      timeoutID.current = setTimeout(() => {
+        onSearch(filters)
+      }, 500)
+    } else {
+      onSearch(filters)
     }
-
-    timeoutId.current = setTimeout(() => {
-      onTextFilter(text)
-    }, 500)
   }
+
 
   return {
-    searchText,
     handleSubmit,
-    handleTextChange
+    handleChange,
   }
 }
 
-export function SearchFormSection ({ initialFilters, onTextFilter, onSearch, initialText }) {
-  const idText = useId()
+export function SearchFormSection({ onSearch, onClearFilters, hasActiveFilters, initialFilters }) {
+  const idQuery = useId()
   const idTechnology = useId()
   const idLocation = useId()
-  const idExperienceLevel = useId()
+  const idExperience = useId()
+  const { handleSubmit, handleChange } = useSearchForm({ idQuery, idTechnology, idLocation, idExperience, onSearch })
 
-  const inputRef = useRef()
-
-  const {
-    handleSubmit,
-    handleTextChange
-  } = useSearchForm({ idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter })
-
-  const handleClearInput = (event) => {
-    event.preventDefault()
-
-    inputRef.current.value = ""
-    onTextFilter("")
-  }
 
   return (
-    <section className="jobs-search">
-      <h1>Encuentra tu próximo trabajo</h1>
+    <section className="form-section">
+      <h1>Encuentra tu proximo empleo</h1>
+
       <p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-      <form onChange={handleSubmit} id="empleos-search-form" role="search">
-
-        <div className="search-bar">
+      <form role="search" id="search-form" onChange={handleSubmit}>
+        <fieldset>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"
+            stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round"
             className="icon icon-tabler icons-tabler-outline icon-tabler-search">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
             <path d="M21 21l-6 -6" />
           </svg>
-          
+
           <input
-            ref={inputRef}
-            name={idText} id="empleos-search-input" type="text"
+            type="text"
             placeholder="Buscar trabajos, empresas o habilidades"
-            onChange={handleTextChange}
-            defaultValue={initialText}
+            name={idQuery}
+            id={idQuery}
+            value={initialFilters.query}
+            onChange={handleChange}
           />
 
-          <button onClick={handleClearInput}>
-           ✖︎
-          </button>
-        </div>
-
-        <div className="search-filters">
-          <select name={idTechnology} id="filter-technology" defaultValue={initialFilters.technology}>
-            <option value="">Tecnología</option>
-            <optgroup label="Tecnologías populares">
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="react">React</option>
-              <option value="nodejs">Node.js</option>
-            </optgroup>
-            <option value="java">Java</option>
-            <hr />
-            <option value="csharp">C#</option>
-            <option value="c">C</option>
-            <option value="c++">C++</option>
-            <hr />
-            <option value="ruby">Ruby</option>
-            <option value="php">PHP</option>
+        </fieldset>
+        <fieldset id="filters">
+          <select
+            name={idTechnology}
+            id={idTechnology}
+            value={initialFilters.technologies}
+            onChange={handleChange}
+          >
+            <option value="">Tecnológia</option>
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="cplusplus">C++</option>
           </select>
 
-          <select name={idLocation} id="filter-location" defaultValue={initialFilters.location}>
+          <select
+            name={idLocation}
+            id={idLocation}
+            value={initialFilters.location}
+            onChange={handleChange}
+          >
             <option value="">Ubicación</option>
-            <option value="remoto">Remoto</option>
             <option value="cdmx">Ciudad de México</option>
             <option value="guadalajara">Guadalajara</option>
-            <option value="monterrey">Monterrey</option>
             <option value="barcelona">Barcelona</option>
+            <option value="madrid">Madrid</option>
+            <option value="monterrey">Monterrey</option>
+            <option value="lima">Lima</option>
+            <option value="santiago">Santiago de Chile</option>
+            <option value="bsas">Buenos Aires</option>
+            <option value="bogota">Bogotá</option>
+            <option value="remoto">Remoto</option>
           </select>
 
-          <select name={idExperienceLevel} id="filter-experience-level" defaultValue={initialFilters.experienceLevel}>
+          <select
+            name={idExperience}
+            id={idExperience}
+            value={initialFilters.experience}
+            onChange={handleChange}
+          >
             <option value="">Nivel de experiencia</option>
             <option value="junior">Junior</option>
-            <option value="mid">Mid-level</option>
+            <option value="mid-level">SemiSenior</option>
             <option value="senior">Senior</option>
-            <option value="lead">Lead</option>
           </select>
-        </div>
-      </form>
 
-      <span id="filter-selected-value"></span>
+          {hasActiveFilters && <button onClick={onClearFilters} type="reset">Limpiar Filtros</button>}
+        </fieldset>
+
+      </form>
     </section>
   )
 }

@@ -1,152 +1,214 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { JobListings } from '../components/JobListings.jsx'
+import { JobsNavigation } from '../components/JobsNavigation.jsx'
+import { SearchFormSection } from '../components/SearchFormSection.jsx'
 import { useSearchParams } from 'react-router'
 
-import { Pagination } from '../components/Pagination.jsx'
-import { SearchFormSection } from '../components/SearchFormSection.jsx'
-import { JobListings } from '../components/JobListings.jsx'
-import styles from './Search.module.css'
+import "../index.css"
 
-const RESULTS_PER_PAGE = 4
+// traer datos de una api, guardarlos en un estado
+// crear un efecto para traer datos del exterior de manera asyncrona
+// api https://jscamp-api.vercel.app/api/jobs
 
-const useFilters = () => {
-  const [searchParams, setSearchParams] = useSearchParams()
+// las llamadas a apis van dentro de useEffect, estos pueden ser asincronos dentro de este
 
-  const [filters, setFilters] = useState(() => {
-    return {
-      technology: searchParams.get('technology') || '',
-      location: searchParams.get('type') || '',
-      experienceLevel: searchParams.get('level') || ''
-    }
-  })
+// para ejecutar los parametros de busqueda tenemos que usar URLSearchParams y luego pasarlo a string para añadirlo a la URL
 
-  const [textToFilter, setTextToFilter] = useState(() => searchParams.get('text') || '')
+const useFilters = ({ saveFilters, resetFilters, storedFilters }) => {
+    const [searchParams, setSearchParams] = useSearchParams()
+    const [filters, setFilters] = useState(() => {
+        // TODO-FIX: add url syncronization in useLocalStorage
+        if (storedFilters) return storedFilters
 
-  const [currentPage, setCurrentPage] = useState(() => {
-    const page = Number(searchParams.get('page'))
-    return Number.isNaN(page) ? page : 1
-  })
+        let initialFilters = ({
+            query: searchParams.get("text") || "",
+            technologies: searchParams.get("technology") || "",
+            location: searchParams.get("type") || "",
+            experience: searchParams.get("level") || "",
+        })
 
-  const [jobs, setJobs] = useState([])
-  const [total, setTotal] = useState(0)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchJobs() {
-      try {
-        setLoading(true)
-
-        const params = new URLSearchParams()
-        if (textToFilter) params.append('text', textToFilter)
-        if (filters.technology) params.append('technology', filters.technology)
-        if (filters.location) params.append('type', filters.location)
-        if (filters.experienceLevel) params.append('level', filters.experienceLevel)
-
-        const offset = (currentPage - 1) * RESULTS_PER_PAGE
-        params.append('limit', RESULTS_PER_PAGE)
-        params.append('offset', offset)
-
-        const queryParams = params.toString()
-      
-        const response = await fetch(`https://jscamp-api.vercel.app/api/jobs?${queryParams}`)
-        const json = await response.json()
-
-        setJobs(json.data)
-        setTotal(json.total)
-      } catch (error) {
-        console.error('Error fetching jobs:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchJobs()
-  }, [filters, currentPage, textToFilter])
-
-  useEffect(() => {
-    setSearchParams(() => {
-      // Clear all existing params
-      const params = new URLSearchParams()
-      // Add only needed params
-      if (textToFilter) params.set('text', textToFilter)
-      if (filters.technology) params.set('technology', filters.technology)
-      if (filters.location) params.set('type', filters.location)
-      if (filters.experienceLevel) params.set('level', filters.experienceLevel)
-
-      if (currentPage > 1) params.set('page', currentPage)
-
-      return params
+        return initialFilters
     })
+    const [currentPage, setCurrentPage] = useState(() => {
+        let page = Number.parseInt(searchParams.get("page"))
+        return Number.isNaN(page) ? 1 : page
+    })
+    const isFirstRender = useRef(true)
 
-  }, [filters, currentPage, textToFilter, setSearchParams])
+    const [jobs, setJobs] = useState([])
+    const [total, setTotal] = useState(0)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
-  const totalPages = Math.ceil(total / RESULTS_PER_PAGE)
+    const hasActiveFilters = Boolean(filters.experience || filters.location || filters.query || filters.technologies)
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page)
-  }
+    const handleClearFilters = () => {
+        setFilters({
+            query: "",
+            technologies: "",
+            location: "",
+            experience: "",
+        })
+        setCurrentPage(1)
+        resetFilters()
+    }
 
-  const handleSearch = (filters) => {
-    setFilters(filters)
-    setCurrentPage(1)
-  }
+    const RESULTS_PER_PAGE = 5
 
-  const handleTextFilter = (newTextToFilter) => {
-    setTextToFilter(newTextToFilter)
-    setCurrentPage(1)
-  }
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false
+            return
+        }
+        setCurrentPage(1)
+    }, [filters])
 
-  return {
-    filters,
-    loading,
-    jobs,
-    total,
-    totalPages,
-    currentPage,
-    textToFilter,
-    handlePageChange,
-    handleSearch,
-    handleTextFilter
-  }
+    useEffect(() => {
+        async function getJobs() {
+            try {
+                setError(null)
+                let queryParams = new URLSearchParams()
+                if (filters.experience) queryParams.append('level', filters.experience)
+                if (filters.location) queryParams.append('type', filters.location)
+                if (filters.technologies) queryParams.append('technology', filters.technologies)
+                if (filters.query) queryParams.append('text', filters.query)
+
+                queryParams.append('limit', RESULTS_PER_PAGE)
+                let offset = (currentPage - 1) * RESULTS_PER_PAGE
+                queryParams.append('offset', offset)
+
+                let query = queryParams.toString()
+
+                let response = await fetch(`https://jscamp-api.vercel.app/api/jobs?${query}`)
+
+                if (!response.ok) {
+                    throw new Error("Error on API response, status:", response)
+                }
+
+                let json = await response.json()
+
+                setJobs(json.data)
+                setTotal(json.total)
+            } catch (erorr) {
+                setError(error)
+                console.log("Error:", erorr);
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        getJobs()
+    }, [filters, currentPage])
+
+    useEffect(() => {
+        setSearchParams(() => {
+            const newParams = new URLSearchParams()
+
+            if (filters.experience) newParams.set('level', filters.experience)
+            if (filters.location) newParams.set('type', filters.location)
+            if (filters.technologies) newParams.set('technology', filters.technologies)
+            if (filters.query) newParams.set('text', filters.query)
+    
+            if (currentPage > 1) newParams.set('page', currentPage)
+
+            return newParams
+        })
+
+    }, [filters, currentPage])
+
+    useEffect(() => {
+        saveFilters(filters)
+    }, [filters])
+
+    const totalPages = Math.ceil(total / RESULTS_PER_PAGE)
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    }
+
+    const handleSearch = (filters) => {
+        setFilters(filters)
+        setCurrentPage(1)
+    }
+
+    return { jobs, loading, totalPages, total, currentPage, filters, hasActiveFilters, error, handleSearch, handlePageChange, handleClearFilters }
+}
+
+const useLocalStorage = () => {
+    let storedFilters = ""
+    const SearchPageID = "SearchPageFilters"
+
+    const getFilters = () => {
+        try {
+            let filters = JSON.parse(localStorage.getItem(SearchPageID)) || null
+            return filters
+        } catch (error) {
+            console.log("Error:", error)
+            return null
+        }
+    }
+
+    // lazy initialization, para obtener un valor solo la primera vez que el componente se monte
+    // useState(() => {
+    //     storedFilters = getFilters()
+    // })
+
+    const saveFilters = (filters) => {
+        localStorage.setItem(SearchPageID, JSON.stringify(filters))
+    }
+
+    const resetFilters = () => {
+        localStorage.removeItem(SearchPageID)
+    }
+
+    return {
+        storedFilters,
+        saveFilters,
+        getFilters,
+        resetFilters,
+    }
 }
 
 export default function SearchPage() {
-  const {
-    filters,
-    jobs,
-    total,
-    loading,
-    totalPages,
-    currentPage,
-    textToFilter,
-    handlePageChange,
-    handleSearch,
-    handleTextFilter
-  } = useFilters()
+    const { saveFilters, storedFilters, resetFilters } = useLocalStorage()
+    const {
+        jobs,
+        loading,
+        totalPages,
+        currentPage,
+        hasActiveFilters,
+        error,
+        filters,
+        handlePageChange,
+        handleClearFilters,
+        handleSearch,
+    } = useFilters({ saveFilters, resetFilters, storedFilters })
 
-  const title = loading
-    ? `Cargando... - DevJobs`
-    : `Resultados: ${total}, Página ${currentPage} - DevJobs`
-
-  return (
-    <main>
-      <title>{title}</title>
-      <meta name="description" content="Explora miles de oportunidades laborales en el sector tecnológico. Encuentra tu próximo empleo en DevJobs." />
-
-      <SearchFormSection
-        initialText={textToFilter}
-        initialFilters={filters}
-        onSearch={handleSearch}
-        onTextFilter={handleTextFilter}
-      />
-
-      <section className={styles.searchResults}>
-        <h2 style={{ textAlign: 'center' }}>Resultados de búsqueda</h2>
-
-        {
-          loading ? <p>Cargando empleos...</p> : <JobListings jobs={jobs} />
-        }
-        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-      </section>
-    </main>
-  )
+    return (
+        <main>
+            <SearchFormSection
+                onSearch={handleSearch}
+                onClearFilters={handleClearFilters}
+                hasActiveFilters={hasActiveFilters}
+                initialFilters={filters}
+            />
+            <section className="job-listings">
+                {error && (
+                    <>
+                        <h4>Error: {error}</h4>
+                        <button onClick={() => window.location.reload()}>Recargar pagina</button>
+                    </>
+                )}
+                {loading
+                    ? <h4>Cargando Trabajos...</h4>
+                    : <JobListings jobList={jobs} />
+                }
+                <JobsNavigation
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
+            </section>
+        </main>
+    )
 }

@@ -1,9 +1,16 @@
-import { Link as NavLink } from 'react-router'
+import { Link as RRLink, useLocation } from "react-router"
 
-export function Link ({ href, children, ...restOfProps }) {
-  return (
-    <NavLink to={href} {...restOfProps}>
-      {children}
-    </NavLink>
-  )
+export const Link = ({ href, children, ...props}) => {
+    const location = useLocation()
+
+    const checkPath = () => {
+        if (location.pathname === "/") return
+        return href.includes(location.pathname)
+    }
+    
+    return (
+    <RRLink to={href} aria-current={checkPath() ? "page" : ""} className={checkPath() ? "active-link" : ""} {...props}>
+        {children}
+    </RRLink>
+    )
 }
