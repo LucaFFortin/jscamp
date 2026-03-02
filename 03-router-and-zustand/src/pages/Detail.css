@@ -70,6 +70,12 @@ article {
         &:active {
             transform: scale(0.95);
         }
+
+        &:disabled {
+            background-color: var(--text-muted);
+            color: var(--card-bg);
+            pointer-events: none;
+        }
     }
 }
 

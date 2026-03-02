@@ -1,9 +1,11 @@
 import { useParams } from "react-router"
-import "./detail.css"
-import { useEffect, useState } from "react"
 import { Link } from "../components/Link.jsx"
 import { useRouter } from "../hooks/useRouter.jsx"
+
 import snarkdown from 'snarkdown';
+import "./detail.css"
+import { useAuthStore } from "../store/auth.js";
+import { useEffect, useState } from "react";
 
 const SVGCheck = () => {
   return (
@@ -116,9 +118,7 @@ export default function Detail() {
             <h1>{job.titulo}</h1>
             <p>{job.empresa} - {job.ubicacion}</p>
           </section>
-          <section>
-            <button>Aplicar ahora</button>
-          </section>
+          <ApplyButton />
         </header>
         <footer className="job-description">
           <JobSection title="Descripción del puesto" content={job.content.description} className="description" />
@@ -128,5 +128,15 @@ export default function Detail() {
         </footer>
       </article>
     </main>
+  )
+}
+
+const ApplyButton = () => {
+  const { isLoggedIn } = useAuthStore()
+
+  return (
+    <section>
+      <button disabled={!isLoggedIn}>{isLoggedIn ? "Aplicar ahora" : "Inicia sesión para aplicar"}</button>
+    </section>
   )
 }

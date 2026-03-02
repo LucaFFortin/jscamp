@@ -3,12 +3,15 @@ import { lazy, Suspense } from 'react'
 
 import { Footer } from './components/Footer.jsx'
 import { Header } from './components/Header.jsx'
+import { ProtectedRoute } from './components/ProtectedRoute.jsx'
 
 const NotFoundPage = lazy(() => import('./pages/404.jsx'))
 const HomePage = lazy(() => import('./pages/Home.jsx'))
 const SearchPage = lazy(() => import("./pages/Search.jsx"))
 const Contact = lazy(() => import("./pages/Contact.jsx"))
 const Detail = lazy(() => import('./pages/Detail.jsx'))
+const Login = lazy(() => import('./pages/Login.jsx'))
+const ProfilePage = lazy(() => import('./pages/Profile.jsx'))
 
 function App() {
   return (
@@ -20,6 +23,12 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path='/job/:jobId' element={<Detail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path='/profile' element={
+            <ProtectedRoute redirectTo="/">
+              <ProfilePage />
+            </ProtectedRoute>
+            } />
           <Route path='*' element={<NotFoundPage />} /> {/* para rutas que no estan definidas o errores */}
         </Routes>
       </Suspense>
