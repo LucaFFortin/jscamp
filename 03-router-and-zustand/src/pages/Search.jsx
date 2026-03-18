@@ -79,6 +79,8 @@ const useFilters = ({ saveFilters, resetFilters, storedFilters }) => {
 
                 let query = queryParams.toString()
 
+                
+                // let response = await fetch(`http://localhost:1234/jobs?${query}`)
                 let response = await fetch(`https://jscamp-api.vercel.app/api/jobs?${query}`)
 
                 if (!response.ok) {

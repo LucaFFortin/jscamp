@@ -1,42 +1,78 @@
-import { readdir, stat } from 'node:fs/promises'
-import { join } from 'node:path'
+import { stat, readdir } from "node:fs/promises"
+import { join, extname } from "node:path";
 
-// 1. Recuperar la carpeta a listar
-const dir = process.argv[2] ?? '.'
+const PROCESS_ARGS = process.argv
+let args = PROCESS_ARGS.slice(2)
 
-// 2. Formateo simple de los tamaños
-const formatBytes = (size) => {
-  if (size < 1024) return `${size} B`
-  return `${(size / 1024).toFixed(2)} KB`
+let dir = args[0] ?? '.'
+
+let dirFiles = await readdir(dir)
+// flags
+let isOrdered = args.includes("--order")
+let onlyFiles = args.includes("--only-files")
+let onlyFolders = args.includes("--only-folders")
+let fileExtension
+let hasFileExtensionFlag = args.some(arg => {
+    let hasExt = arg.includes("--only-.")
+    if (hasExt) fileExtension = arg.slice(7)
+    return hasExt
+})
+
+// ANSI COLORS
+
+const red = '\x1b[31m';
+const green = '\x1b[32m';
+const reset = '\x1b[0m';
+const yellow = '\x1b[33m'
+const blue = '\x1b[34m'
+const purple = '\x1b[35m'
+const cyan = '\x1b[36m'
+const white = '\x1b[37m'
+
+const colorText = (text, color) => {
+    return color + text + reset
 }
 
-// 3. Leer los nombres, sin info
-const files = await readdir(dir)
+function formatSize(bytes) {
+    if (bytes === "-") return `${"0".padEnd(6)} ${"B ".padStart(3)}`
+    const k = 1024
+    const sizes = ['B ', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return `${String(parseFloat((bytes / Math.pow(k, i)).toFixed(2))).padEnd(7)} ${sizes[i]}`
+}
 
-// 4. Recuperar la info de cada file
-const entries = await Promise.all(
-  files.map(async (name) => {
-    const fullPath = join(dir, name)
-    const info = await stat(fullPath)
+let filePromises = dirFiles.map(async (file) => {
+    const filePath = join(dir, file)
+    const fileStats = await stat(filePath)
+    const fileExt = extname(filePath) === "" ? "-" : extname(filePath)
+    const isDirectory = fileStats.isDirectory()
+    if (onlyFiles && isDirectory) return []
+    if (onlyFolders && !isDirectory) return []
+    const fileIcon = isDirectory ? "📂" : "📄"
+    const fileSize = fileStats.size === 0 ? "-" : fileStats.size
+    const lineString = `|${fileIcon}| ${colorText(file, blue).padEnd(29)}| ${fileExt.padEnd(9)}| ${formatSize(fileSize)}|`
 
-    return {
-      name,
-      isDir: info.isDirectory(),
-      size: formatBytes(info.size)
+    if (!hasFileExtensionFlag) return [lineString, isDirectory]
+    
+    else if (hasFileExtensionFlag && fileExt === fileExtension) {
+        return [lineString, isDirectory]
     }
-  })
-)
+    
+    else return []
+})
 
-// sort
-// 1. Que aparezcan primero las carpetas
-// 2. Que esten en orden alfabetico los ficheros
+console.log(`|  | ${"Name".padEnd(20)}| ${"Extension".padEnd(7)}| ${"Size".padEnd(9)} |`)
 
-// filter
-// tener en cuenta flags como --files-only o --dirs-only
+const filesLines = await Promise.all(filePromises)
+const folders = []
+const files = []
+filesLines.forEach(([line, isDirectory]) => {
+    if (line && isOrdered) {
+        if (isDirectory) folders.push(line)
+        else files.push(line)
+    }
+    else if (line) console.log(line)
+})
 
-for (const entry of entries) {
-  // Renderizar la información
-  const icon = entry.isDir ? '📁' : '📄'
-  const size = entry.isDir ? '-' : ` ${entry.size}`
-  console.log(`${icon} ${entry.name.padEnd(25)}    ${size}`)
-}
+folders.forEach(line => console.log(line))
+files.forEach(line => console.log(line))

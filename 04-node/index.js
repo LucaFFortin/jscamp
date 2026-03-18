@@ -1,4 +1,7 @@
-import { sum } from "./math.js";
+import { add, substrack, multiply, divide } from "./math.js";
 
-const result = sum(2, 3);
-console.log(`The sum of 2 and 3 is: ${result}`);
+console.log("hola")
+console.log(add(1, 2))
+console.log(substrack(2, 1))
+console.log(multiply(3, 4))
+console.log(divide(4, 4))

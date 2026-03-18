@@ -1,97 +1,77 @@
-import { createServer } from 'node:http'
-import { randomUUID } from 'node:crypto'
-import { json } from 'node:stream/consumers'
+import { randomUUID } from "node:crypto"
+import { createServer } from "node:http"
+import { json } from "node:stream/consumers"
+import { URL } from "node:url"
 
 process.loadEnvFile()
 
 const port = process.env.PORT ?? 3000
 
-function sendJson(res, statusCode, data) {
-  res.statusCode = statusCode
-  res.setHeader('Content-Type', 'application/json; charset=utf-8')
-  res.end(JSON.stringify(data))
-}
-
 const users = [
-  {
-    "id": 1,
-    "name": "Alice"
-  },
-  {
-    "id": 2,
-    "name": "Bob"
-  },
-  {
-    "name": "midu",
-    "id": "c2c5b26c-0b51-4d0d-a085-987da276c9cb"
-  },
-  {
-    "name": "pheralb",
-    "id": "24d9a10e-6baa-4c60-b291-354ecebc97eb"
-  },
-  {
-    "name": "madeval",
-    "id": "580f4bb9-b311-4f06-8e09-e88605dd9038"
-  },
-  {
-    "name": "Lucía",
-    "id": "ff3b043e-5b5b-49d5-95a0-2a3c04922220"
-  }
+    { id: 1, user: "luca", username: "lurr" },
+    { id: 2, user: "pepe", username: "papo" },
+    { id: 3, user: "pepa", username: "pepa" },
+    { id: 4, user: "pipa", username: "pipa" },
+    { id: 5, user: "florcita", username: "mieko_hana" },
 ]
 
-const server = createServer(async (req, res) => {
-  const { method, url } = req
+const sendJson = (res, statusCode, data) => {
+    res.statusCode = statusCode
+    res.setHeader("content-type", "application/json; charset=utf-8")
+    return res.end(JSON.stringify(data))
+}
 
-  const [pathname, querystring] = url.split('?')
+let server = createServer(async (req, res) => {
+    const { method, url } = req
+    const {pathname, searchParams} = new URL(url, `http://${req.headers.host}/`)
 
-  const searchParams = new URLSearchParams(querystring)
+    if (method === "GET") {
+        if (pathname === "/health") {
+            const healthInfo = {
+                status: "ok",
+                uptime: process.uptime(),
+                timestamp: Date.now(),
+            }
+            return sendJson(res, 200, healthInfo)
+        }
 
-  if (method === 'GET') {
-    if (pathname === '/users') {
-      const limit = Number(searchParams.get('limit')) || users.length
-      const offset = Number(searchParams.get('offset')) || 0
+        if (pathname === "/users") {
+            if (Number.isNaN(Number(searchParams.get("limit"))) || 
+                Number.isNaN(Number(searchParams.get("offset")))) {
+                return sendJson(res, 400, {error: "Limit and offset must be numbers"})
+            }
 
-      const paginatedUsers = users.slice(offset, offset + limit)
+            // users.length puede causar problemas de rendimiento a futuro, debemos usar un numero fijo.
+            const limit = Number(searchParams.get("limit")) || users.length
+            const offset = Number(searchParams.get("offset")) || 0
 
-      return sendJson(res, 200, paginatedUsers)
+            const paginatedUsers = users.slice(offset, limit + offset)
+
+            return sendJson(res, 200, paginatedUsers)
+        }
     }
-  
-    if (pathname === '/health') {
-      return sendJson(res, 200, { status: 'ok', uptime: process.uptime() })
+
+    if (method === "POST") {
+        if (pathname === "/users") {
+            const body = await json(req)
+            
+            if (!body || !body.name || !body.username) return sendJson(res, 400, {error: "name and username is required"})
+
+            const newUser = {
+                name: body.name,
+                username: body.username,
+                id: randomUUID(),
+            }
+
+            users.push(newUser)
+
+            return sendJson(res, 201, {status: "user created"});
+        }
     }
 
-    if (pathname === '/cookies') {
-      // setear la cookie desde el backend para el cliente
-      res.setHeader('Set-Cookie', 'token=abc123; HttpOnly; Path=/; Max-Age=3600')
-
-      return res.end('Cookies set')
-    }
-  }
-
-  if (method === 'POST') {
-    if (pathname === '/users') {
-      const body = await json(req)
-      
-      if (!body || !body.name) {
-        return sendJson(res, 400, { error: 'Name is required' })
-      }
-
-      const newUser = {
-        name: body.name,
-        id: randomUUID(),
-      }
-
-      users.push(newUser)
-    
-      return sendJson(res, 201, { message: 'Usuario creado' })
-    }
-  }
-
-
-  return sendJson(res, 404, { error: 'Not Found' })
+    return sendJson(res, 404, { error: "not found" })
 })
 
 server.listen(port, () => {
-  const address = server.address()
-  console.log(`Servidor escuchando en http://localhost:${address.port}`)
+    console.log(`escuchando en http://localhost:${port}`);
 })

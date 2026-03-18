@@ -1,41 +1,35 @@
 import express from 'express'
-import jobs from './jobs.json' with { type: 'json' }
+import jobs from "./jobs.json" with { type: "json" }
 import { DEFAULTS } from './config.js'
 
+
 const PORT = process.env.PORT ?? DEFAULTS.PORT
+
 const app = express()
 
-app.get('/', (req, res) => {
-  return res.send({ message: 'Hello World' })
+app.use((req, res, next) => {
+    const timeString = new Date().toLocaleTimeString()
+    console.log(`${timeString} ${req.url} ${req.method}`);
+    next()
 })
 
-app.get('/health', (req, res) => {
-  return res.json({
-    status: 'ok',
-    uptime: process.uptime()
-  })
+app.get("/", (req, res) => {
+    res.send("hello world!")
 })
 
-// Opcional -> /acd o /abcd
-app.get('/a{b}cd', (req, res) => {
-  return res.send('abcd o acd')
+app.get("/health", (req, res) => {
+    res.json({
+        status: "ok",
+        uptime: process.uptime(),
+    })
 })
 
-// Comodín
-app.get('/bb*bb', (req, res) => {
-  return res.send('bb*bb')
+// path opcional, podemos evitar escribir c
+app.get("/ab{c}d", (req, res) => {
+    console.log("abcd o abd?");
 })
 
-// Rutas más largas que no sabes como terminan
-app.get('/file/*filename', (req, res) => {
-  return res.send('file/*')
-})
-
-// Usar Regex
-app.get(/.*fly$/, (req, res) => {
-  return res.send('Terminando en fly')
-})
-
-app.listen(PORT, () => {
-  console.log(`Servidor levantado en http://localhost:${PORT}`)
+// comodin, podemos escribir cualquier cosa en el asterisco, lo que pongamos despues de este sera el nombre del comodin
+app.get("/luca*flor", (req, res) => {
+    res.send(String(req.url).replaceAll("%20", " "))
 })
