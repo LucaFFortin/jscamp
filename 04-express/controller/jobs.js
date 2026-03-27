@@ -13,7 +13,7 @@ export class JobController {
         // los enviamos a el modelo
         // el modelo gestiona los datos
         // nos retorna los datos filtrados y el total
-        const { filteredJobs, totalJobsCount } = await JobModel.getAll(limit, offset, technology, type, level, text)
+        const { filteredJobs, totalJobsCount } = await JobModel.getAll({ limit, offset, technology, type, level, text })
 
         // enviamos los datos a la vista
         res.json({ data: filteredJobs, limit: limit, offset: offset, results: filteredJobs.length, total: totalJobsCount })
@@ -30,6 +30,8 @@ export class JobController {
     }
 
     static async create(req, res) {
+        if (!req.body) res.status(400).json({ error: "no request.body was provided, body is undefined" })
+
         const { titulo, descripcion, empresa, ubicacion, data } = req.body
 
         const newJob = await JobModel.create({ titulo, descripcion, empresa, ubicacion, data })
@@ -39,11 +41,12 @@ export class JobController {
 
     static async update(req, res) {
         const { id } = req.params
-        const { titulo, descripcion, empresa, ubicacion, data } = req.body
+        const { titulo, empresa, descripcion, ubicacion, data } = req.body
 
         const jobToReplaceIndex = await JobModel.update({ id, titulo, descripcion, empresa, ubicacion, data })
 
-        if (!jobToReplaceIndex) return res.status(404).json({ error: `Job with id ${id} not found` })
+        // deberiamos de cambiar porque 0 es un indice y es falsy, por lo que lanzaria un error.
+        if (jobToReplaceIndex === null || jobToReplaceIndex === undefined) return res.status(404).json({ error: `Job with id ${id} not found` })
 
         return res.status(302).json("Job has been replaced")
     }
@@ -54,7 +57,7 @@ export class JobController {
 
         let jobToUpdateIndex = await JobModel.partialUpdate({ id, titulo, descripcion, empresa, ubicacion, data })
 
-        if (!jobToUpdateIndex) return res.status(404).json({ error: `Job with id ${id} not found` })
+        if (jobToUpdateIndex === null || jobToUpdateIndex === undefined) return res.status(404).json({ error: `Job with id ${id} not found` })
 
         return res.status(302).json("Job has been updated")
     }
@@ -64,9 +67,9 @@ export class JobController {
 
         const jobToDeleteIndex = await JobModel.detele({ id })
 
-        if (!jobToDeleteIndex) return res.status(404).json({ error: `Job with id ${id} not found` })
+        if (jobToDeleteIndex === null || jobToDeleteIndex === undefined) return res.status(404).json({ error: `Job with id ${id} not found` })
 
-        res.status(302).json(`Job with id: ${id}has been Deleted`)
+        res.status(302).json(`Job with id: ${id} has been Deleted`)
         // TODO
     }
 }

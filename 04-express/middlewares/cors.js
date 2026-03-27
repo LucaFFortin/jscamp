@@ -1,14 +1,10 @@
 import cors from "cors"
 
 const ACCEPTED_ORIGINS = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://04-express-ashen.vercel.app/"
 ]
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => {
-    return cors({
-        origin: (origin, callback) => {
-            if (acceptedOrigins.includes(origin)) return callback(null, true) // primer parametro para el error
-            return callback(new Error("Origin in not allowed"))
-        }
-    })
+    return cors()
 }

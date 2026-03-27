@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { JobController } from "../controller/jobs.js";
+import { validateCreate, validateUpdate } from "../middlewares/jobsValidation.js";
 
 export const jobsRouter = Router()
 
@@ -8,10 +9,10 @@ jobsRouter.get("/", JobController.getAll)
 
 jobsRouter.get("/:id", JobController.getById)
 
-jobsRouter.post("/", JobController.create)
+jobsRouter.post("/", validateCreate, JobController.create)
 
-jobsRouter.put("/:id", JobController.update)
+jobsRouter.put("/:id",validateCreate, JobController.update)
 
-jobsRouter.patch("/:id", JobController.partialUpdate)
+jobsRouter.patch("/:id", validateUpdate, JobController.partialUpdate)
 
 jobsRouter.delete("/:id", JobController.detele)

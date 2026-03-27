@@ -5,6 +5,7 @@ export class JobModel {
     static async getAll({ limit, offset, technology, type, level, text }) {
         let filteredJobs = jobs
         let totalJobsCount = jobs.length
+        // console.log(technology);
 
         if (text) {
             const searchTerm = text.toLowerCase()
@@ -55,7 +56,6 @@ export class JobModel {
     }
 
     static async create({ titulo, descripcion, empresa, ubicacion, data }) {
-
         const newJob = {
             id: randomUUID(),
             titulo,
@@ -84,7 +84,7 @@ export class JobModel {
 
         if (jobToReplaceIndex === -1) return null
 
-        jobs = jobs.toSpliced(jobToReplaceIndex, 1, newJob)
+        jobs.splice(jobToReplaceIndex, 1, newJob)
 
         return jobToReplaceIndex
     }
@@ -110,17 +110,17 @@ export class JobModel {
             data: !data ? jobToUpdate.data : data,
         }
 
-        jobs = jobs.toSpliced(jobToUpdateIndex, 1, newJob)
+        jobs.splice(jobToUpdateIndex, 1, newJob)
 
         return jobToUpdateIndex
     }
 
     static async detele({ id }) {
         const jobToDeleteIndex = jobs.findIndex(elem => elem.id === id)
+        
+        if (jobToDeleteIndex === -1) return null
 
-        if (!jobToDeleteIndex) return null
-
-        jobs = jobs.toSpliced(jobToDeleteIndex, 1)
+        jobs.splice(jobToDeleteIndex, 1)
 
         return jobToDeleteIndex
     }
