@@ -29,7 +29,6 @@ const useSearchForm = ({ idQuery, idTechnology, idLocation, idExperience, onSear
 
     // aplicamos debounce si la entrada de datos proviene del input para evitar multiples llamadas
     if (e.target.name === idQuery) {
-
       // Debounce: tecnica para retrasar las llamadas a una funcion
       // si existe el timer, lo eliminamos y creamos uno nuevo
       if (timeoutID.current) clearTimeout(timeoutID.current)

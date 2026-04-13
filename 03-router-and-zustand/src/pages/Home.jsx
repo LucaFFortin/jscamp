@@ -38,7 +38,7 @@ export default function HomePage() {
             <path d="M21 21l-6 -6" />
           </svg>
 
-          <input type="text" placeholder="Buscar empleos por titulo, habilidad o empresa" name="query" />
+          <input type="search" placeholder="Buscar empleos por titulo, habilidad o empresa" name="query" />
 
           <button type="submit">Buscar</button>
         </form>
